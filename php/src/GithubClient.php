@@ -213,7 +213,7 @@ class GithubClient
                     $response[] = $factory($repositoryData);
                     continue;
                 }
-                $response[] = $repositoryData;
+                $response[] = new Repository($this, $repositoryData);
         }
 
         return $response;
