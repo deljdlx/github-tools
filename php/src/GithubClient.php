@@ -39,6 +39,18 @@ class GithubClient
         return $manager;
     }
 
+    public function getRepository(string $repositoryName, ?callable $factory = null): array
+    {
+        $repositoryData = $this->fetchGithubApi('/repos/' . $repositoryName);
+        $repository = $this->buildRepositoriesResponse(
+            [$repositoryData],
+            $factory,
+            null
+        );
+
+        return $repository[0];
+    }
+
 
     public function getUserRepositories(string $userName, ?callable $factory = null): array
     {
