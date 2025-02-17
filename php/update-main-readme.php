@@ -8,13 +8,13 @@ use Deljdlx\Github\Repository;
 require_once __DIR__ . '/vendor/autoload.php';
 
 
-// $options = getopt('', [
-//     'token:',
-//     'repository:',
-// ]);
+$options = getopt('', [
+    'token:',
+    'repository:',
+]);
 
-// $token = $options['token'];
-// $repositoryName = $options['repository'];
+$token = $options['token'];
+$repositoryName = $options['repository'];
 
 $mainRepositoryName = 'deljdlx/deljdlx';
 
