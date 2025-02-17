@@ -35,7 +35,7 @@ if($ownReadme->getDemoUrl()) {
 
     $demoUrl = $ownReadme->getDemoUrl();
     $title = ($ownReadme->getTitle() !== false) ? $ownReadme->getTitle() : false;
-    $description = $ownReadme->getPart('DESCRIPTION');
+    $description = $ownReadme->getPart('SHORT-PRESENTATION');
     if($title === false) {
         echo 'No title found in README.md' . PHP_EOL;
         exit(1);
