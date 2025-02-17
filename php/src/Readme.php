@@ -12,6 +12,15 @@ class Readme
         $this->parse($content);
     }
 
+    public function getDemoUrl()
+    {
+        if(preg_match('`^.*?demo[^\n]*?\((https?://[^\s]+?)\).*?$`ism', $this->content, $matches)) {
+            return $matches[1];
+        }
+
+        return false;
+    }
+
     public function getTitle(): string|false
     {
         $pattern = '`# ([^\n]+?)\n`';
