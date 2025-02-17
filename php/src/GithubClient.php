@@ -39,7 +39,7 @@ class GithubClient
         return $manager;
     }
 
-    public function getRepository(string $repositoryName, ?callable $factory = null): array
+    public function getRepository(string $repositoryName, ?callable $factory = null): mixed
     {
         $repositoryData = $this->fetchGithubApi('/repos/' . $repositoryName);
         $repository = $this->buildRepositoriesResponse(
