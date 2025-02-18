@@ -55,10 +55,25 @@ class ReadmeTest extends TestCase
         $readme->appendPartToPart('PRESENTATION', 'NEW-PART', 'Hello World');
         $part = $readme->getPart('NEW-PART');
 
+        $this->assertTrue($readme->partExists('NEW-PART'));
         $this->assertEquals('Hello World', $part);
         $this->assertStringContainsString($readme->getPart('NEW-PART'), $readme->getPart('PRESENTATION'));
         $this->assertStringContainsString($readme->getPart('<!--<NEW-PART>-->'), $readme->getPart('PRESENTATION'));
         $this->assertStringContainsString($readme->getPart('<!--</NEW-PART>-->'), $readme->getPart('PRESENTATION'));
+    }
+
+    public function testAppendPartToExistantPart(): void
+    {
+        $readme = $this->getReadme();
+
+        $readme->appendPartToPart('PRESENTATION', 'NEW-PART', 'Hello World');
+
+        $this->assertTrue($readme->partExists('PRESENTATION'));
+        $this->assertEquals('Hello World', $readme->getPart('NEW-PART'));
+
+        $readme->appendPartToPart('PRESENTATION', 'NEW-PART', 'Hello World 2');
+        $this->assertEquals('Hello World 2', $readme->getPart('NEW-PART'));
+
     }
 
     public function testClearPart(): void

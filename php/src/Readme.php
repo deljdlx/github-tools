@@ -58,6 +58,7 @@ class Readme
             if($endOfLine) {
                 $this->parts[$partName] .= PHP_EOL;
             }
+            $this->refresh();
             return true;
         }
 
@@ -71,7 +72,7 @@ class Readme
     ): bool
     {
         if(!$this->partExists($partName)) {
-            return false;
+            throw new \Exception('Part ' . $partName . ' does not exist');
         }
 
         if($this->partExists($subPartName)) {
@@ -105,6 +106,7 @@ class Readme
                 return false;
             }
             $this->content = $newContent;
+            $this->refresh();
 
             return true;
         }
@@ -115,6 +117,7 @@ class Readme
     {
         if(array_key_exists($partName, $this->parts)) {
             $this->parts[$partName] = '';
+            $this->refresh();
             return true;
         }
         return false;
@@ -127,6 +130,7 @@ class Readme
     {
         if(array_key_exists($partName, $this->parts)) {
             $this->parts[$partName] = $content;
+            $this->refresh();
             return true;
         }
         return false;
@@ -141,7 +145,7 @@ class Readme
 
     public function getPart(string $partName): string
     {
-        return $this->parts[$partName] ?? '';
+        return trim($this->parts[$partName] ?? '');
     }
 
     public function compile(): string
@@ -178,6 +182,16 @@ class Readme
             $partName = $match[1];
             $partContent = $match[2];
             $this->parts[$partName] = $partContent;
+            if(preg_match($pattern, $partContent)) {
+                $this->parse($partContent);
+            }
         }
+    }
+
+    public function refresh(): void
+    {
+        $this->content = $this->compile();
+        $this->parts = [];
+        $this->parse($this->content);
     }
 }
