@@ -76,9 +76,12 @@ $result = $readme->appendPartToPart(
 );
 
 if(!$result) {
-    echo 'Could not append to part ' . $partName . PHP_EOL;
+    echo 'Could not append to part DEMO' . PHP_EOL;
     echo 'Subpart name : '. $partName . PHP_EOL;
     echo 'Part content: ' . $demoBuffer . PHP_EOL;
+    echo "========================================" . PHP_EOL;
+    echo 'Content: ' . $readme->getContent() . PHP_EOL;
+    echo "========================================" . PHP_EOL;
 
     exit(1);
 }
