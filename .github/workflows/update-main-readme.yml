@@ -5,10 +5,10 @@ on:
     secrets:
       personal_access_token:
         required: true
-  push:
-    branches:
-      - main
-  repository_dispatch:
+  # push:
+  #   branches:
+  #     - main
+  # repository_dispatch:
   # schedule:
   #   - cron: '0 * * * *'  # Exécute toutes les heures
 
