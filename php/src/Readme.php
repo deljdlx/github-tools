@@ -80,7 +80,14 @@ class Readme
         }
 
         $this->parts[$subPartName] = $content;
-        $subPartContent = sprintf("<!--<%s>-->\n'%s\n<!--</%s>-->", $subPartName, $content, $subPartName);
+        $subPartContent = sprintf(
+            '<!--<%s>-->' . PHP_EOL .
+            '%s' . PHP_EOL .
+            '<!--</%s>-->' . PHP_EOL,
+            $subPartName,
+            $content,
+            $subPartName
+        );
         return $this->appendToPart($partName, $subPartContent);
     }
 
