@@ -1,0 +1,74 @@
+name: Update README from other repositories
+
+on:
+  push:
+    branches:
+      - main
+  repository_dispatch:
+  # schedule:
+  #   - cron: '0 * * * *'  # Exécute toutes les heures
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    container:
+      image: php:8.3-cli
+      options: --workdir /github/workspace
+    steps:
+
+      - name: Install required packages
+        run: |
+          apt-get update && apt-get install -y git curl jq unzip libzip-dev
+          docker-php-ext-install zip
+
+      - name: Install Git
+        run: apt-get update && apt-get install -y git
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          token: ${{ secrets.ACTION_TOKEN }}
+      - name: Check path before running
+        run: |
+          pwd
+          ls -al
+
+      - name: Install dependencies
+        run: |
+          apt-get update && apt-get install -y git curl jq
+
+      - name: Test PHP
+        run: php -v
+
+      - name: Install Composer
+        run: |
+          curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+      - name: Clone required repositories
+        run: |
+          cd php
+          composer install
+          cd ..
+      - name: Update README
+        run: |
+          cd php
+          php update-main-readme.php --token=${{ secrets.ACTION_TOKEN }} --repository=${{ github.repository }}
+          cd ..
+
+      - name: Check before commit
+        run: ls -al
+
+      - name: Fix Git safe directory issue
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Set up Git authentication
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.ACTION_TOKEN }}@github.com/${{ github.repository }}
+
