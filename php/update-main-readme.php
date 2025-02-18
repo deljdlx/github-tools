@@ -28,34 +28,57 @@ if(is_dir($repositoryPath)) {
 
 $ownReadmePath = __DIR__ . '/../../../../README.md';
 
-$ownReadme = new Readme(file_get_contents($ownReadmePath));
-if($ownReadme->getDemoUrl()) {
-
-    $repository = $client->getRepository($repositoryName);
-
-    $demoUrl = $ownReadme->getDemoUrl();
-    $title = ($ownReadme->getTitle() !== false) ? $ownReadme->getTitle() : false;
-    $description = $ownReadme->getPart('SHORT-PRESENTATION');
-    if($title === false) {
-        echo 'No title found in README.md' . PHP_EOL;
-        exit(1);
-    }
-
-    $manager = $client->clone($mainRepositoryName, $repositoryPath);
-
-    $readmePath = $repositoryPath . '/README.md';
-    $readme = new Readme(file_get_contents($readmePath));
-
-    $demoBuffer = '### [' . $title . '](' . $repository->getUrl() . ')' . PHP_EOL;
-    $demoBuffer .= $description . PHP_EOL;
-    $demoBuffer .= '👓 Demo: [' . $demoUrl . '](' . $demoUrl . ')' . PHP_EOL;
-
-    $readme->appendToPart('DEMOS', $demoBuffer);
-    file_put_contents($readmePath, $readme->compile());
-
-    echo 'Adding to README.md ' . $demoBuffer . PHP_EOL;
-
-    $manager->add($readmePath);
-    $manager->commit('Update README.md - test');
-    $manager->push();
+$readmeContent = file_get_contents($ownReadmePath);
+if($readmeContent === false) {
+    echo 'Could not read README.md' . PHP_EOL;
+    exit(1);
 }
+$ownReadme = new Readme($readmeContent);
+if(!$ownReadme->getDemoUrl()) {
+    echo 'No demo url found in README.md' . PHP_EOL;
+    exit(1);
+}
+
+$repository = $client->getRepository($repositoryName);
+
+$demoUrl = $ownReadme->getDemoUrl();
+$title = ($ownReadme->getTitle() !== false) ? $ownReadme->getTitle() : false;
+$description = $ownReadme->getPart('SHORT-PRESENTATION');
+if($title === false) {
+    echo 'No title found in README.md' . PHP_EOL;
+    exit(1);
+}
+
+$manager = $client->clone($mainRepositoryName, $repositoryPath);
+
+$readmePath = $repositoryPath . '/README.md';
+$content = file_get_contents($readmePath);
+if($content === false) {
+    echo 'Could not read README.md' . PHP_EOL;
+    exit(1);
+}
+$readme = new Readme($content);
+
+
+$partName = 'DEMO-' . $repository->getFullName();
+
+$demoBuffer = '### [' . $title . '](' . $repository->getUrl() . ')' . PHP_EOL;
+$demoBuffer .= $description . PHP_EOL;
+$demoBuffer .= '👓 Demo: [' . $demoUrl . '](' . $demoUrl . ')' . PHP_EOL;
+
+
+$readme->appendPartToPart(
+    'DEMO',
+    $partName,
+    $demoBuffer
+);
+
+$readme->write($readmePath);
+
+echo 'Updating README.md. Added:' . PHP_EOL;
+echo $demoBuffer . PHP_EOL;
+
+$manager->add($readmePath);
+$manager->commit('Update README.md - test');
+$manager->push();
+

@@ -4,16 +4,40 @@ namespace Deljdlx\Github;
 
 use Exception;
 
-class Repository
+class Repository implements Interfaces\Repository
 {
+    /**
+     * @var array{
+     *  name: string,
+     *  full_name: string,
+     *  html_url: string,
+     *  archived: bool,
+     *  private: bool,
+     *  default_branch: string
+     * } $repositoryData
+     */
     public readonly array $repositoryData;
     private GithubClient $client;
 
+    /**
+     * @param array<mixed>$repositoryData
+     */
     public function __construct(
         GithubClient $client,
         array $repositoryData
     ) {
         $this->client = $client;
+
+        if(
+            !isset($repositoryData['name']) || !is_string($repositoryData['name'])
+            || !isset($repositoryData['full_name']) || !is_string($repositoryData['full_name'])
+            || !isset($repositoryData['html_url']) || !is_string($repositoryData['html_url'])
+            || !isset($repositoryData['archived']) || !is_bool($repositoryData['archived'])
+            || !isset($repositoryData['private']) || !is_bool($repositoryData['private'])
+            || !isset($repositoryData['default_branch']) || !is_string($repositoryData['default_branch'])
+        ) {
+            throw new Exception('Invalid repository data');
+        }
         $this->repositoryData = $repositoryData;
     }
 
@@ -30,11 +54,18 @@ class Repository
     public function getSlug(): string
     {
         $slug = mb_strtolower($this->getFullName());
-        return preg_replace(
+
+        $slug = preg_replace(
             '`[^a-z0-9]`',
             '-',
             $slug
         );
+
+        if(!is_string($slug)) {
+            throw new Exception('Could not create slug');
+        }
+
+        return $slug;
     }
 
     public function getUrl(): string
@@ -64,7 +95,8 @@ class Repository
             $response = $this->client->fetchGithubApi(
                 '/repos/' . $this->repositoryData['full_name'] . '/readme'
             );
-            if ($response === false) {
+
+            if(!isset($response['content']) || !is_string($response['content'])) {
                 return false;
             }
 
@@ -74,7 +106,7 @@ class Repository
         }
     }
 
-    public function getDemoUrl()
+    public function getDemoUrl(): string|false
     {
         $readme = $this->getReadme();
         if ($readme === false) {

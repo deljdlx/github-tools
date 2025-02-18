@@ -1,0 +1,19 @@
+parameters:
+    level: 9
+
+    paths:
+        - php
+
+    excludePaths:
+        - php/vendor
+
+    scanDirectories:
+    ignoreErrors:
+    tmpDir: cache/phpstan
+includes:
+
+
+
+
+
+

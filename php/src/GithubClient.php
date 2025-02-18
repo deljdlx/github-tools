@@ -2,16 +2,17 @@
 namespace Deljdlx\Github;
 
 use Deljdlx\Github\Interfaces\Cache;
+use Deljdlx\Github\Interfaces\Repository as RepositoryInterface;
 use Exception;
 
 class GithubClient
 {
     public const GITHUB_API_URL = 'https://api.github.com';
     private string $token;
+    /**
+     * @var array<string, string>
+     */
     private array $lastResponseHeaders = [];
-
-    private ?string $nextPageUrl = null;
-
     private ?Cache $cacheDriver = null;
 
     public function __construct(string $token, ?Cache $cacheDriver = null)
@@ -20,26 +21,20 @@ class GithubClient
         $this->cacheDriver = $cacheDriver;
     }
 
-    public function clone($repositoryName, $path): RepositoryManager
+    public function clone(string $repositoryName, string $path): RepositoryManager
     {
-        $url = sprintf(
-            'https://%s@github.com/%s.git',
-            $this->token,
-            $repositoryName
-        );
-
-        $command = sprintf(
-            'git clone %s %s',
-            $url,
-            $path
-        );
-        exec($command, $output, $returnVar);
         $manager = new RepositoryManager($this, $path);
+        $manager->clone($repositoryName, $path);
 
         return $manager;
     }
 
-    public function getRepository(string $repositoryName, ?callable $factory = null): mixed
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    public function getRepository(string $repositoryName, ?callable $factory = null): RepositoryInterface
     {
         $repositoryData = $this->fetchGithubApi('/repos/' . $repositoryName);
         $repository = $this->buildRepositoriesResponse(
@@ -52,11 +47,20 @@ class GithubClient
     }
 
 
+    /**
+     * @return array<RepositoryInterface>
+     */
     public function getUserRepositories(string $userName, ?callable $factory = null): array
     {
+        static $nextPageUrl;
+        if($nextPageUrl === null) {
+            $nextPageUrl = false;
+        }
+
+
         $endpoint = '/users/' . $userName . '/repos';
-        if($this->nextPageUrl !== null) {
-            $endpoint = $this->nextPageUrl;
+        if($nextPageUrl !== false) {
+            $endpoint = $nextPageUrl;
         }
 
         $repositories = $this->fetchGithubApi($endpoint);
@@ -65,17 +69,22 @@ class GithubClient
             $factory,
             null
         );
-
+        $nextPageUrl = $this->getNextPageUrl();
 
         return $userRepositories;
     }
 
     /**
-     * @return []
+     * @return array<RepositoryInterface>
      */
     public function getOwnRepositories(string $userName, ?callable $factory = null): array
     {
-        static $nextPageUrl = $nextPageUrl ?? false;
+        static $nextPageUrl;
+
+        if($nextPageUrl === null) {
+            $nextPageUrl = false;
+        }
+
         $endpoint = '/user/repos';
         if($nextPageUrl !== false) {
             $endpoint = $nextPageUrl;
@@ -94,21 +103,19 @@ class GithubClient
         return $ownRepositories;
     }
 
-    public function getNextPage(): array
-    {
-        $nextPageUrl = $this->getNextPageUrl();
-        return $this->fetchGithubApi($nextPageUrl);
-    }
-
-
     public function hasNextPage(): bool
     {
-        return isset($this->lastResponseHeaders['link'])
-        && strpos($this->lastResponseHeaders['link'], 'rel="next"') !== false;
+        return
+            isset($this->lastResponseHeaders['link'])
+            && strpos($this->lastResponseHeaders['link'], 'rel="next"') !== false;
     }
 
     public function getNextPageUrl(): string|false
     {
+        if(!array_key_exists('link', $this->lastResponseHeaders)) {
+            return false;
+        }
+
         $linkHeader = $this->lastResponseHeaders['link'];
         $matches = [];
         preg_match('/<([^>]+)>; rel="next"/', $linkHeader, $matches);
@@ -118,11 +125,18 @@ class GithubClient
         return $matches[1];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getLastResponseHeaders(): array
     {
         return $this->lastResponseHeaders;
     }
 
+    /**
+     * @param string $endpoint
+     * @return array<mixed>
+     */
     public function fetchGithubApi(string $endpoint): array
     {
         $url = self::GITHUB_API_URL . $endpoint;
@@ -137,6 +151,12 @@ class GithubClient
             $cachedBuffer = $this->cacheDriver->get($cacheKey);
 
             if($cachedBuffer !== false) {
+                /**
+                 * @var array{
+                 *  headers: array<string, string>,
+                 *  body: array<string, mixed>
+                 * } $data
+                 */
                 $data = json_decode($cachedBuffer, true);
                 $this->lastResponseHeaders = $data['headers'];
                 return $data['body'];
@@ -159,6 +179,9 @@ class GithubClient
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        if(!is_string($response)) {
+            throw new Exception("Curl error: " . curl_error($ch));
+        }
         $headers = substr($response, 0, $headerSize);
         $body = substr($response, $headerSize);
         $this->lastResponseHeaders = $this->parseHeaders($headers);
@@ -186,6 +209,10 @@ class GithubClient
         return $data;
     }
 
+    /**
+     * @param string $headers
+     * @return array<string, string>
+     */
     private function parseHeaders(string $headers): array
     {
         $headerLines = explode("\r\n", trim($headers));
@@ -201,11 +228,26 @@ class GithubClient
         return $parsedHeaders;
     }
 
-    private function buildRepositoriesResponse(array $repositories, ?callable $factory = null, ?callable $filter = null): array
+
+    /**
+     * @param array<mixed> $repositories
+     * @param callable|null $factory
+     * @param callable|null $filter
+     * @return array<RepositoryInterface>
+     */
+    private function buildRepositoriesResponse(
+        array $repositories,
+        ?callable $factory = null,
+        ?callable $filter = null
+    ): array
     {
         $response = [];
 
         foreach ($repositories as $repositoryData) {
+            if (!is_array($repositoryData)) {
+                throw new Exception('Invalid repository data');
+            }
+
             if ($filter !== null && !$filter($repositoryData)) {
                 continue;
             }
@@ -213,6 +255,7 @@ class GithubClient
                     $response[] = $factory($repositoryData);
                     continue;
                 }
+
                 $response[] = new Repository($this, $repositoryData);
         }
 
