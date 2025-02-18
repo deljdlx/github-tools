@@ -165,7 +165,7 @@ class Readme
 
     public function parse(string $content): void
     {
-        $pattern = '`<!--\s*<([^>]+?)>\s*-->(.*?)<!--\s*<\/\\1>-->`s';
+        $pattern = '`<!--\s*<([^\s]+?)>\s*-->(.*?)<!--\s*<\/\\1>\s*-->`s';
 
         preg_match_all(
             $pattern,

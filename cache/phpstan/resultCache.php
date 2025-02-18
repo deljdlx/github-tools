@@ -797,7 +797,7 @@ return [
   ),
   '/home/jdlxt/__dev/repo/github-tools/php/src/Readme.php' => 
   array (
-    'fileHash' => 'b4f34b6a1f2e8e1b2610e62a5637c2c982dded3c',
+    'fileHash' => '4eefa6705063ee9ecec48810044737c17c6bfd21',
     'dependentFiles' => 
     array (
       0 => '/home/jdlxt/__dev/repo/github-tools/php/tests/ReadmeTest.php',
@@ -844,7 +844,7 @@ return [
   ),
   '/home/jdlxt/__dev/repo/github-tools/php/update-main-readme.php' => 
   array (
-    'fileHash' => '9918ce9e28f73b23d179a6297347f88f8ac77098',
+    'fileHash' => 'd38354e7865d4482daf555cd9c25301ac9689eae',
     'dependentFiles' => 
     array (
     ),

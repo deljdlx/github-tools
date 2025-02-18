@@ -7,7 +7,7 @@ return \PHPStan\Cache\CacheItem::__set_state(array(
   array (
     '/home/jdlxt/__dev/repo/github-tools/php/update-main-readme.php' => 
     array (
-      0 => '9918ce9e28f73b23d179a6297347f88f8ac77098',
+      0 => 'd38354e7865d4482daf555cd9c25301ac9689eae',
       1 => 
       array (
       ),
@@ -46,7 +46,7 @@ return \PHPStan\Cache\CacheItem::__set_state(array(
     ),
     '/home/jdlxt/__dev/repo/github-tools/php/src/Readme.php' => 
     array (
-      0 => 'b4f34b6a1f2e8e1b2610e62a5637c2c982dded3c',
+      0 => '4eefa6705063ee9ecec48810044737c17c6bfd21',
       1 => 
       array (
         0 => 'deljdlx\\github\\readme',
