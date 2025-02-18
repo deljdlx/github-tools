@@ -22,7 +22,7 @@ jobs:
 
       - name: Install required packages
         run: |
-          apt-get update && apt-get install -y curl jq unzip libzip-dev
+          apt-get update && apt-get install -y curl jq unzip libzip-dev tree
           docker-php-ext-install zip
 
       - name: Install Git
@@ -57,6 +57,7 @@ jobs:
 
       - name: Clone required repositories
         run: |
+          tree . -L 2
           cd php
           composer install --no-dev --optimize-autoloader
           cd ..
