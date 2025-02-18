@@ -65,9 +65,9 @@ $readme = new Readme($content);
 
 $partName = 'DEMO-' . $repository->getFullName();
 
-$demoBuffer = '### [' . $title . '](' . $repository->getUrl() . ')' . PHP_EOL;
-$demoBuffer .= $description . PHP_EOL;
-$demoBuffer .= '👓 Demo: [' . $demoUrl . '](' . $demoUrl . ')' . PHP_EOL;
+$demoBuffer = '### [' . $title . '](' . $repository->getUrl() . ')' . PHP_EOL . PHP_EOL;
+$demoBuffer .= $description . PHP_EOL . PHP_EOL;
+$demoBuffer .= '👓 Demo: [' . $demoUrl . '](' . $demoUrl . ')' . PHP_EOL . PHP_EOL;
 
 $result = $readme->appendPartToPart(
     'DEMOS',
