@@ -57,15 +57,17 @@ jobs:
 
       - name: Clone required repositories
         run: |
-          tree . -L 2
-          cd php
+          tree . -L 3
+          git clone https://github.com/deljdlx/github-tools.git tools
+          cd tools/php
           composer install --no-dev --optimize-autoloader
-          cd ..
+          cd ../..
+          tree . -L 3
       - name: Update README
         run: |
-          cd php
+          cd tools/php
           php update-main-readme.php --token=${{ secrets.ACTION_TOKEN }} --repository=${{ github.repository }}
-          cd ..
+          cd ../..
 
       - name: Check before commit
         run: ls -al
