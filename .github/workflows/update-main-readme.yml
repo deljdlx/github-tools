@@ -66,7 +66,7 @@ jobs:
       - name: Update README
         run: |
           cd tools/php
-          php update-main-readme.php --token=${{ secrets.ACTION_TOKEN }} --repository=${{ github.repository }}
+          php update-main-readme.php --token=${{ secrets.personal_access_token }} --repository=${{ github.repository }}
           cd ../..
 
       - name: Check before commit
@@ -77,5 +77,5 @@ jobs:
 
       - name: Set up Git authentication
         run: |
-          git remote set-url origin https://x-access-token:${{ secrets.ACTION_TOKEN }}@github.com/${{ github.repository }}
+          git remote set-url origin https://x-access-token:${{ secrets.personal_access_token }}@github.com/${{ github.repository }}
 
