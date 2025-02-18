@@ -79,11 +79,11 @@ class Readme
             return true;
         }
 
-        $this->parts[$subPartName] = $content;
+        $this->parts[$subPartName] = PHP_EOL . $content. PHP_EOL;
         $subPartContent = sprintf(
-             PHP_EOL . '<!--<%s>-->' . PHP_EOL .
-             PHP_EOL . '%s' . PHP_EOL .
-             PHP_EOL . '<!--</%s>-->' . PHP_EOL,
+            '<!--<%s>-->' . PHP_EOL .
+            '%s' . PHP_EOL .
+            '<!--</%s>-->' . PHP_EOL,
             $subPartName,
             $content,
             $subPartName

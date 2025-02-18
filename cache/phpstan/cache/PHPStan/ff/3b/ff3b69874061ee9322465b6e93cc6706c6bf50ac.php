@@ -46,7 +46,7 @@ return \PHPStan\Cache\CacheItem::__set_state(array(
     ),
     '/home/jdlxt/__dev/repo/github-tools/php/src/Readme.php' => 
     array (
-      0 => '733ca9d7b3029416fa4dd1f1868646e952ca388a',
+      0 => '27fd3a0a01b48b872c21493323371d0a5b0d5518',
       1 => 
       array (
         0 => 'deljdlx\\github\\readme',

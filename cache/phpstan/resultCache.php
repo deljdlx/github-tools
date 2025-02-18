@@ -797,7 +797,7 @@ return [
   ),
   '/home/jdlxt/__dev/repo/github-tools/php/src/Readme.php' => 
   array (
-    'fileHash' => '733ca9d7b3029416fa4dd1f1868646e952ca388a',
+    'fileHash' => '27fd3a0a01b48b872c21493323371d0a5b0d5518',
     'dependentFiles' => 
     array (
       0 => '/home/jdlxt/__dev/repo/github-tools/php/tests/ReadmeTest.php',
