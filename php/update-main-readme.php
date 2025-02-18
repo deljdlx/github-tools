@@ -49,6 +49,9 @@ if($title === false) {
     exit(1);
 }
 
+
+
+
 $manager = $client->clone($mainRepositoryName, $repositoryPath);
 
 $readmePath = $repositoryPath . '/README.md';
@@ -66,7 +69,6 @@ $demoBuffer = '### [' . $title . '](' . $repository->getUrl() . ')' . PHP_EOL;
 $demoBuffer .= $description . PHP_EOL;
 $demoBuffer .= '👓 Demo: [' . $demoUrl . '](' . $demoUrl . ')' . PHP_EOL;
 
-
 $readme->appendPartToPart(
     'DEMO',
     $partName,
@@ -75,8 +77,10 @@ $readme->appendPartToPart(
 
 $readme->write($readmePath);
 
-echo 'Updating README.md. Added:' . PHP_EOL;
-echo $demoBuffer . PHP_EOL;
+echo 'Updating README.md. ' . $readmePath . PHP_EOL;
+echo "======================================" . PHP_EOL;
+echo $readme->compile() . PHP_EOL;
+echo "======================================" . PHP_EOL;
 
 $manager->add($readmePath);
 $manager->commit('Update README.md - test');
