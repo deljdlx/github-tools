@@ -80,7 +80,7 @@ class Readme
         }
 
         $this->parts[$subPartName] = $content;
-        $subPartContent = sprintf('<!--<%s>-->%s<!--</%s>-->', $subPartName, $content, $subPartName);
+        $subPartContent = sprintf("<!--<%s>-->\n'%s\n<!--</%s>-->", $subPartName, $content, $subPartName);
         return $this->appendToPart($partName, $subPartContent);
     }
 
