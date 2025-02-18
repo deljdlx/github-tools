@@ -155,7 +155,9 @@ class Readme
         foreach($this->parts as $partName => $partContent) {
             $compiledPart = preg_replace(
                 '`<!--\s*<' . $partName . '>\s*-->(.*?)<!--\s*</' . $partName . '>-->`s',
-                '<!--<' . $partName . '>-->' . $partContent . '<!--</' . $partName . '>-->',
+                '<!--<' . $partName . '>-->' . PHP_EOL .
+                    $partContent . PHP_EOL .
+                '<!--</' . $partName . '>-->' . PHP_EOL,
                 $content
             );
 
