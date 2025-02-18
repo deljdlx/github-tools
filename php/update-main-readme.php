@@ -70,7 +70,7 @@ $demoBuffer .= $description . PHP_EOL;
 $demoBuffer .= '👓 Demo: [' . $demoUrl . '](' . $demoUrl . ')' . PHP_EOL;
 
 $result = $readme->appendPartToPart(
-    'DEMO',
+    'DEMOS',
     $partName,
     $demoBuffer
 );
