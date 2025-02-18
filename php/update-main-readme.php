@@ -69,11 +69,19 @@ $demoBuffer = '### [' . $title . '](' . $repository->getUrl() . ')' . PHP_EOL;
 $demoBuffer .= $description . PHP_EOL;
 $demoBuffer .= '👓 Demo: [' . $demoUrl . '](' . $demoUrl . ')' . PHP_EOL;
 
-$readme->appendPartToPart(
+$result = $readme->appendPartToPart(
     'DEMO',
     $partName,
     $demoBuffer
 );
+
+if(!$result) {
+    echo 'Could not append to part ' . $partName . PHP_EOL;
+    echo 'Subpart name : '. $partName . PHP_EOL;
+    echo 'Part content: ' . $demoBuffer . PHP_EOL;
+
+    exit(1);
+}
 
 $readme->write($readmePath);
 
