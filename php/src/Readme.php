@@ -165,6 +165,9 @@ class Readme
                 $content = $compiledPart;
             }
         }
+
+        $content = preg_replace('`\n{3,}`', PHP_EOL . PHP_EOL, $content);
+
         return $content;
     }
 
