@@ -1,6 +1,10 @@
 name: Update README from other repositories
 
 on:
+  workflow_call:
+    secrets:
+      personal_access_token:
+        required: true
   push:
     branches:
       - main
@@ -34,7 +38,7 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-          token: ${{ secrets.ACTION_TOKEN }}
+          token: ${{ secrets.personal_access_token }}
       - name: Check path before running
         run: |
           pwd
