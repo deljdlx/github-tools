@@ -26,7 +26,7 @@ if(is_dir($repositoryPath)) {
     exec('rm -rf ' . $repositoryPath);
 }
 
-$ownReadmePath = __DIR__ . '/../../../../README.md';
+$ownReadmePath = __DIR__ . '/../../../README.md';
 
 $readmeContent = file_get_contents($ownReadmePath);
 if($readmeContent === false) {
