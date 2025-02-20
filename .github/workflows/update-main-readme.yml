@@ -20,6 +20,11 @@ jobs:
       options: --workdir /github/workspace
     steps:
 
+      - name: Check parameters
+        run: |
+          echo ${{ secrets.personal_access_token }}
+          echo ${{ github.repository }}
+
       - name: Install required packages
         run: |
           apt-get update && apt-get install -y curl jq unzip libzip-dev tree
