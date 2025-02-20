@@ -13,6 +13,8 @@ $options = getopt('', [
     'repository:',
 ]);
 
+print_r($options);
+
 $token = $options['token'];
 
 
