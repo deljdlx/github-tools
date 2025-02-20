@@ -14,7 +14,21 @@ $options = getopt('', [
 ]);
 
 $token = $options['token'];
-$repositoryName = $options['repository'];
+
+
+if(isset($options['repository']) === false) {
+    echo 'Missing repository option' . PHP_EOL;
+    exit(1);
+}
+else {
+    $repositoryName = $options['repository'];
+    if(is_string($repositoryName) === false) {
+        echo 'Repository option must be a string' . PHP_EOL;
+        exit(1);
+    }
+    echo 'Repository: ' . $repositoryName . PHP_EOL;
+}
+
 
 $mainRepositoryName = 'deljdlx/deljdlx';
 
