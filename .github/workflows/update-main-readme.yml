@@ -23,7 +23,7 @@ jobs:
       - name: Check parameters
         run: |
           echo ${{ secrets.personal_access_token }}
-          echo ${{ github.repository }}
+          echo Working on repository: ${{ github.repository }}
 
       - name: Install required packages
         run: |
