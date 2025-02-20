@@ -17,7 +17,8 @@ $token = $options['token'];
 
 
 if(isset($options['repository']) === false) {
-    echo 'Missing repository option' . PHP_EOL;
+    echo 'PHP Missing repository option' . PHP_EOL;
+    print_r($options);
     exit(1);
 }
 else {
