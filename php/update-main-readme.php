@@ -53,7 +53,7 @@ if($readmeContent === false) {
 $ownReadme = new Readme($readmeContent);
 if(!$ownReadme->getDemoUrl()) {
     echo 'No demo url found in README.md' . PHP_EOL;
-    exit(1);
+    exit(0);
 }
 
 $repository = $client->getRepository($repositoryName);
