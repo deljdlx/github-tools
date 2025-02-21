@@ -32,6 +32,8 @@ jobs:
         key: "${{ secrets.ssh_key }}"
         script: |
           set -e
+          pwd
+          ls ~
           cd "${{ inputs.deploy_folder }}"
 
           # Variables
