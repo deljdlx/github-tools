@@ -1,0 +1,57 @@
+name: Deploy on push
+
+on:
+  workflow_call:
+    inputs:
+      repo_name:
+        required: true
+        type: string
+      repo_owner:
+        required: true
+        type: string
+      deploy_folder:
+        description: "deploy path (ex: ~/stack)"
+        required: true
+        type: string
+    secrets:
+      ssh_key:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: "jlb.ninja"
+        username: "jdlxt"
+        key: "${{ secrets.ssh_key }}"
+        script: |
+          set -e
+          cd "${{ inputs.deploy_folder }}"
+
+          # Variables
+          REPO_NAME="${{ inputs.repo_name }}"
+          REPO_OWNER="${{ inputs.repo_owner }}"
+          REPO_URL="git@github.com:$REPO_OWNER/$REPO_NAME.git"
+
+          # Vérifier si le repo existe, sinon le cloner
+          if [ ! -d "$REPO_NAME/.git" ]; then
+            git clone "$REPO_URL" "$REPO_NAME"
+          fi
+
+          cd "$REPO_NAME"
+          git pull origin main
+
+          # Vérifier si .env existe, sinon le créer
+          if [ ! -f ".env" ]; then
+            echo "DOMAIN=$REPO_NAME.jlb.ninja" > .env
+          fi
+
+          docker compose down
+          docker compose build
+          docker compose up -d
