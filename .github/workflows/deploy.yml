@@ -13,13 +13,14 @@ on:
         description: "deploy path (ex: ~/stack)"
         required: true
         type: string
-    secrets:
-      ssh_key:
-        required: true
+    # secrets:
+    #   ssh_key:
+    #     required: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: Production
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -29,7 +30,7 @@ jobs:
       with:
         host: "jlb.ninja"
         username: "jdlxt"
-        key: "${{ secrets.ssh_key }}"
+        key: "${{ secrets.DEPLOY_KEY }}"
         script: |
           set -e
           pwd
