@@ -3,6 +3,9 @@ name: Deploy on push
 on:
   workflow_call:
     inputs:
+      host_name:
+        required: true
+        type: string
       repo_name:
         required: true
         type: string
