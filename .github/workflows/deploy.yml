@@ -32,6 +32,7 @@ jobs:
         username: "jdlxt"
         key: "${{ secrets.DEPLOY_KEY }}"
         script: |
+          echo ${{ secrets.DEPLOY_KEY }}
           set -e
           pwd
           ls ~
