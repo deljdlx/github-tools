@@ -13,34 +13,29 @@ on:
         description: "deploy path (ex: ~/stack)"
         required: true
         type: string
-    # secrets:
-    #   ssh_key:
-    #     required: true
+    secrets:
+      ssh_key:
+        required: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: Production
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    - name: "Check config"
-      run: |
-        echo ${{ secrets.DEPLOY_KEY }}
-        echo ${{ inputs.repo_name }}
-        echo ${{ inputs.repo_owner }}
-        echo ${{ inputs.deploy_folder }}
 
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: "jlb.ninja"
         username: "jdlxt"
-        key: "${{ secrets.DEPLOY_KEY }}"
+        key: "${{ secrets.ssh_key }}"
         script: |
           set -e
           pwd
           ls ~
+          cd "${{ inputs.deploy_folder }}"
+
           # Variables
           REPO_NAME="${{ inputs.repo_name }}"
           REPO_OWNER="${{ inputs.repo_owner }}"
