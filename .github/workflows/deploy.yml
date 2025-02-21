@@ -49,6 +49,8 @@ jobs:
           cd "$REPO_NAME"
           git pull origin main
 
+          cd compose
+
           # Vérifier si .env existe, sinon le créer
           if [ ! -f ".env" ]; then
             echo "DOMAIN=$REPO_NAME.jlb.ninja" > .env
