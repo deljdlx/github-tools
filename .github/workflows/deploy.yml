@@ -22,6 +22,7 @@ on:
 
 jobs:
   deploy:
+    if: github.repository_owner == 'deljdlx'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
